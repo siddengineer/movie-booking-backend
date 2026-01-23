@@ -71,11 +71,14 @@
 # else:
 #     run_migrations_online()
 import os
+import sys
 from logging.config import fileConfig
 from sqlalchemy import pool
 from sqlalchemy import create_engine
 from alembic import context
 from dotenv import load_dotenv
+from app.models.movie import Movie
+from app.models.theater import Theater
 
 # Load environment variables
 load_dotenv()
