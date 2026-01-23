@@ -79,6 +79,8 @@ from alembic import context
 from dotenv import load_dotenv
 from app.models.movie import Movie
 from app.models.theater import Theater
+from app.models.screen import Screen
+from app.models.show import Show
 
 # Load environment variables
 load_dotenv()

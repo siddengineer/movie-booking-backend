@@ -7,6 +7,8 @@ from app.models.theater import Theater
 from app.schemas.movie import MovieCreate, MovieResponse
 from app.schemas.theater import TheaterCreate, TheaterResponse
 from app.auth.dependencies import get_current_user  # from Day 4
+from app.schemas.screen import ScreenCreate, ScreenResponse
+from app.schemas.show import ShowCreate, ShowResponse
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 

@@ -10,7 +10,7 @@
 #     address = Column(String)
 from sqlalchemy import Column, Integer, String
 from app.core.database import Base
-
+from sqlalchemy.orm import relationship
 class Theater(Base):
     __tablename__ = "theaters"
 
@@ -18,3 +18,4 @@ class Theater(Base):
     name = Column(String(255), nullable=False)
     city = Column(String(100), nullable=False)
     address = Column(String(500))
+    screens = relationship("Screen", back_populates="theater")

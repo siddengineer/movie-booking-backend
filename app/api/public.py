@@ -4,8 +4,10 @@ from sqlalchemy.orm import Session
 from app.core.database import SessionLocal
 from app.models.movie import Movie
 from app.models.theater import Theater
-from app.schemas.movie import MovieResponse
-from app.schemas.theater import TheaterResponse
+from app.schemas.theater import TheaterCreate, TheaterResponse
+from app.schemas.screen import ScreenCreate, ScreenResponse
+from app.schemas.show import ShowCreate, ShowResponse
+from app.schemas.movie import MovieCreate, MovieResponse
 
 router = APIRouter(tags=["Public"])
 
