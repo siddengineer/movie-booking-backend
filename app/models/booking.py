@@ -44,9 +44,6 @@
 
 #     user = relationship("User", back_populates="bookings")
 #     show = relationship("Show", back_populates="bookings")
-from sqlalchemy import Column, Integer, ForeignKey,Float,String
-from sqlalchemy.orm import relationship
-from app.core.database import Base
 
 # class Booking(Base):
 #     __tablename__ = "bookings"
@@ -60,6 +57,22 @@ from app.core.database import Base
 
 #     user = relationship("User", back_populates="bookings")
 #     show = relationship("Show", back_populates="bookings")
+# from sqlalchemy import Column, Integer, ForeignKey,Float,String
+# from sqlalchemy.orm import relationship
+# from app.core.database import Base
+
+# class Booking(Base):
+#     __tablename__ = "bookings"
+#     id = Column(Integer, primary_key=True, index=True)
+#     user_id = Column(Integer, ForeignKey("users.id"))
+#     show_id = Column(Integer, ForeignKey("shows.id"))
+#     seats_booked = Column(Integer, nullable=False)
+#     total_price = Column(Float, nullable=False)
+#     status = Column(String(50), default="pending")  # pending / confirmed / canceled
+from sqlalchemy import Column, Integer, ForeignKey, Float, String
+from sqlalchemy.orm import relationship
+from app.core.database import Base
+
 class Booking(Base):
     __tablename__ = "bookings"
     id = Column(Integer, primary_key=True, index=True)
@@ -68,3 +81,9 @@ class Booking(Base):
     seats_booked = Column(Integer, nullable=False)
     total_price = Column(Float, nullable=False)
     status = Column(String(50), default="pending")  # pending / confirmed / canceled
+
+    # ✅ Relationship with Show
+    show = relationship("Show", back_populates="bookings")
+
+    # Optional: Relationship with User
+    user = relationship("User", back_populates="bookings")

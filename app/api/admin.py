@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
+from app.auth.dependencies import get_current_admin_user
 from app.core.database import SessionLocal
 from app.models.movie import Movie
 from app.models.theater import Theater

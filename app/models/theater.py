@@ -19,3 +19,4 @@ class Theater(Base):
     city = Column(String(100), nullable=False)
     address = Column(String(500))
     screens = relationship("Screen", back_populates="theater")
+    location = Column(String(255), nullable=True)  # added location field

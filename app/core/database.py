@@ -28,12 +28,38 @@
 #         yield db
 #     finally:
 #         db.close()
+# from sqlalchemy import create_engine
+# from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.orm import sessionmaker
+
+# # Your MySQL connection string
+# SQLALCHEMY_DATABASE_URL = "mysql+pymysql://username:1234@localhost/movie_booking"
+
+# # Engine
+# engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
+
+# # Session factory
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# # ✅ Declarative base (needed for models)
+# Base = declarative_base()
+
+# # ✅ Dependency to use in routers
+# def get_db():
+#     db = SessionLocal()
+#     try:
+#         yield db
+#     finally:
+#         db.close()
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv
 
-# Your MySQL connection string
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://username:1234@localhost/movie_booking"
+load_dotenv()  # loads .env variables
+
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Engine
 engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
@@ -41,10 +67,10 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
 # Session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# ✅ Declarative base (needed for models)
+# Declarative base
 Base = declarative_base()
 
-# ✅ Dependency to use in routers
+# Dependency
 def get_db():
     db = SessionLocal()
     try:

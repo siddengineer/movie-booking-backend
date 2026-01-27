@@ -28,6 +28,34 @@
 #     db.commit()
 #     db.refresh(new_user)
 #     return {"username": new_user.username, "email": new_user.email}
+# from fastapi import APIRouter, Depends, HTTPException
+# from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+# from datetime import datetime, timedelta
+# import jwt
+# from app.core.database import get_db
+# from sqlalchemy.orm import Session
+# from app.models.user import User
+
+# SECRET_KEY = "YOUR_SECRET_KEY"
+# ALGORITHM = "HS256"
+
+# router = APIRouter(prefix="/auth", tags=["Auth"])
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
+# def authenticate_user(db: Session, username: str, password: str):
+#     user = db.query(User).filter(User.username == username).first()
+#     if user and user.password == password:  # you can hash later
+#         return user
+#     return False
+
+# @router.post("/login")
+# def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+#     user = authenticate_user(db, form_data.username, form_data.password)
+#     if not user:
+#         raise HTTPException(status_code=401, detail="Incorrect username or password")
+#     token_data = {"sub": user.username, "exp": datetime.utcnow() + timedelta(hours=1)}
+#     token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
+#     return {"access_token": token, "token_type": "bearer"}
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime, timedelta
@@ -40,11 +68,11 @@ SECRET_KEY = "YOUR_SECRET_KEY"
 ALGORITHM = "HS256"
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")  # <-- fixed
 
 def authenticate_user(db: Session, username: str, password: str):
     user = db.query(User).filter(User.username == username).first()
-    if user and user.password == password:  # you can hash later
+    if user and user.password == password:  # simple check
         return user
     return False
 
