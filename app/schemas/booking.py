@@ -1,10 +1,14 @@
+
 from pydantic import BaseModel
+from datetime import datetime
+
 
 class BookingCreate(BaseModel):
     show_id: int
     seats_booked: int
     row: int
     seat_number: int
+
 
 class BookingResponse(BaseModel):
     id: int
@@ -13,8 +17,7 @@ class BookingResponse(BaseModel):
     seats_booked: int
     total_price: int
     status: str
-    created_at: str
-    id: int
+    created_at: datetime
     paid: bool
 
     class Config:

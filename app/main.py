@@ -44,19 +44,113 @@
 # def health():
 #     return {"status": "running"}
 
+# from fastapi import FastAPI
+# from app.api import admin, public, screen, shows, booking
+# from app.auth.routes import router as auth_router
+
+# app = FastAPI(title="Movie Booking Backend")
+
+# # Include routers
+# app.include_router(admin.router, prefix="/admin")   # admin routes
+# app.include_router(public.router)                  # public routes
+# app.include_router(auth_router)                    # auth routes
+# app.include_router(screen.router, prefix="/screen") # screen routes
+# app.include_router(shows.router)                   # shows router, already has /shows prefix
+# app.include_router(booking.router)                 # booking routes
+
+# @app.get("/")
+# def health():
+#     return {"status": "running"}
+
+
+# from fastapi import FastAPI
+# from app.api import admin, public, screen, shows, booking
+# from app.auth.routes import router as auth_router
+
+# # ✅ IMPORT ALL MODELS (VERY IMPORTANT)
+# from app.models.user import User
+# from app.models.movie import Movie
+# from app.models.theater import Theater
+# from app.models.screen import Screen
+# from app.models.show import Show
+# from app.models.booking import Booking
+
+# app = FastAPI(title="Movie Booking Backend")
+
+# # Include routers
+# app.include_router(admin.router, prefix="/admin")
+# app.include_router(public.router)
+# app.include_router(auth_router)
+# app.include_router(screen.router, prefix="/screen")
+# app.include_router(shows.router)
+# app.include_router(booking.router)
+
+# @app.get("/")
+# def health():
+#     return {"status": "running"}
+
+# from fastapi import Depends, HTTPException
+# from sqlalchemy.orm import Session
+# from app.core.database import get_db
+# from app.models.user import User
+# from pydantic import BaseModel, EmailStr
+# from passlib.context import CryptContext
+
+# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# # Schema
+# class UserCreate(BaseModel):
+#     name: str
+#     email: EmailStr
+#     password: str
+
+
+# def hash_password(password: str):
+#     return pwd_context.hash(password)
+
+
+# @router.post("/register")
+# def register(user: UserCreate, db: Session = Depends(get_db)):
+    
+#     existing_user = db.query(User).filter(User.email == user.email).first()
+
+#     if existing_user:
+#         raise HTTPException(status_code=400, detail="Email already exists")
+
+#     new_user = User(
+#         name=user.name,
+#         email=user.email,
+#         password=hash_password(user.password),
+#         is_admin=False
+#     )
+
+#     db.add(new_user)
+#     db.commit()
+#     db.refresh(new_user)
+
+#     return {
+#         "message": "User registered successfully",
+#         "user_id": new_user.id
+#     }
 from fastapi import FastAPI
 from app.api import admin, public, screen, shows, booking
 from app.auth.routes import router as auth_router
 
+from app.models.user import User
+from app.models.movie import Movie
+from app.models.theater import Theater
+from app.models.screen import Screen
+from app.models.show import Show
+from app.models.booking import Booking
+
 app = FastAPI(title="Movie Booking Backend")
 
-# Include routers
-app.include_router(admin.router, prefix="/admin")   # admin routes
-app.include_router(public.router)                  # public routes
-app.include_router(auth_router)                    # auth routes
-app.include_router(screen.router, prefix="/screen") # screen routes
-app.include_router(shows.router)                   # shows router, already has /shows prefix
-app.include_router(booking.router)                 # booking routes
+app.include_router(admin.router, prefix="/admin")
+app.include_router(public.router)
+app.include_router(auth_router)
+app.include_router(screen.router, prefix="/screen")
+app.include_router(shows.router)
+app.include_router(booking.router)
 
 @app.get("/")
 def health():
