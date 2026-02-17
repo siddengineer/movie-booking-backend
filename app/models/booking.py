@@ -5,7 +5,7 @@ from app.core.database import Base
 
 
 class Booking(Base):
-    _tablename_ = "bookings"
+    __tablename__ = "bookings"
 
     id = Column(Integer, primary_key=True, index=True)
 
@@ -15,7 +15,7 @@ class Booking(Base):
 
     seats_booked = Column(Integer, nullable=False)
 
-    row = Column(Integer, nullable=False)
+    seat_row = Column(Integer, nullable=False)
 
     seat_number = Column(Integer, nullable=False)
 

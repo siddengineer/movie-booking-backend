@@ -6,7 +6,7 @@ from datetime import datetime
 class BookingCreate(BaseModel):
     show_id: int
     seats_booked: int
-    row: int
+    seat_row: int
     seat_number: int
 
 

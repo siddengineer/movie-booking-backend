@@ -369,6 +369,8 @@ def create_booking(
             user_id=current_user.id,
             show_id=show.id,
             seats_booked=booking.seats_booked,
+            seat_row=booking.seat_row,
+            seat_number=booking.seat_number,
             total_price=total_price,
             status="pending"  # you can update to "confirmed" after payment
         )
