@@ -742,7 +742,9 @@ from app.schemas.booking import BookingCreate, BookingResponse
 from app.auth.dependencies import get_current_user
 
 from app.services.payment_service import create_order, verify_payment
+from app.services.email_service import send_booking_email
 
+send_booking_email(current_user.email, booking.id)
 router = APIRouter(
     prefix="/bookings",
     tags=["Bookings"]

@@ -258,7 +258,7 @@ from app.models.booking import Booking
 
 from app.core.database import SessionLocal
 from app.services.payment_service import create_order
-
+from app.api import webhooks
 # FastAPI app
 app = FastAPI(title="Movie Booking Backend")
 
@@ -282,7 +282,7 @@ app.include_router(auth_router)
 app.include_router(screen.router, prefix="/screen")
 app.include_router(shows.router)
 app.include_router(booking.router)
-
+app.include_router(webhooks.router)
 
 # Health check
 @app.get("/")
