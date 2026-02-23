@@ -69,6 +69,7 @@
 
 
 
+
 import smtplib
 import os
 from email.mime.text import MIMEText
@@ -89,12 +90,12 @@ def send_booking_confirmation(to_email: str, booking_id: int):
     subject = "Booking Confirmed 🎉"
 
     body = f"""
-    Your booking is confirmed!
+Your booking is confirmed!
 
-    Booking ID: {booking_id}
+Booking ID: {booking_id}
 
-    Thank you for using our Movie Booking System.
-    """
+Thank you for using our Movie Booking System.
+"""
 
     msg = MIMEMultipart()
     msg["From"] = EMAIL_ADDRESS
@@ -109,7 +110,6 @@ def send_booking_confirmation(to_email: str, booking_id: int):
         server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
 
         server.sendmail(EMAIL_ADDRESS, to_email, msg.as_string())
-
         server.quit()
 
         print("Email sent successfully ✅")

@@ -93,6 +93,50 @@ def create_order(amount: int, receipt: str):
 
 
 # VERIFY PAYMENT
+# def verify_payment(razorpay_order_id, razorpay_payment_id, razorpay_signature):
+
+#     try:
+#         client.utility.verify_payment_signature({
+#             "razorpay_order_id": razorpay_order_id,
+#             "razorpay_payment_id": razorpay_payment_id,
+#             "razorpay_signature": razorpay_signature
+#         })
+
+#         return True
+
+#     except Exception as e:
+#         print("Payment verification failed ❌")
+#         print(e)
+import razorpay
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
+RAZORPAY_SECRET = os.getenv("RAZORPAY_SECRET")
+
+client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_SECRET))
+
+
+# ==========================
+# CREATE ORDER
+# ==========================
+def create_order(amount: int, receipt: str):
+
+    order = client.order.create({
+        "amount": amount,
+        "currency": "INR",
+        "receipt": receipt,
+        "payment_capture": 1
+    })
+
+    return order
+
+
+# ==========================
+# VERIFY PAYMENT
+# ==========================
 def verify_payment(razorpay_order_id, razorpay_payment_id, razorpay_signature):
 
     try:
@@ -101,7 +145,10 @@ def verify_payment(razorpay_order_id, razorpay_payment_id, razorpay_signature):
             "razorpay_payment_id": razorpay_payment_id,
             "razorpay_signature": razorpay_signature
         })
+
         return True
 
-    except:
+    except Exception as e:
+        print("Payment verification failed ❌")
+        print(e)
         return False
