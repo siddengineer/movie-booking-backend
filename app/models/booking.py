@@ -21,7 +21,7 @@ class Booking(Base):
 
     total_price = Column(Float, nullable=False)
 
-    status = Column(String(50), default="confirmed")
+    status = Column(String(50), default="pending")
 
     created_at = Column(DateTime, default=datetime.utcnow)   # MUST be inside class
 
