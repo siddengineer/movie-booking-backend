@@ -846,6 +846,79 @@ def unlock_seats(lock_key: str):
 # CREATE BOOKING
 # ==========================
 
+# @router.post("/")
+# def create_booking(
+#     booking: BookingCreate,
+#     db: Session = Depends(get_db),
+#     current_user: User = Depends(get_current_user)
+# ):
+
+#     # Trigger auto cancel first
+#     auto_cancel_expired_bookings(db)
+#     existing_booking = 
+#     available_seats = get_available_seats(
+#         booking.show_id,
+#         db
+#     )
+
+#     if booking.seats_booked > available_seats:
+#         raise HTTPException(
+#             status_code=400,
+#             detail="Not enough seats available"
+#         )
+
+#     lock_key = lock_seats(booking.show_id)
+
+#     try:
+
+#         show = db.query(Show).filter(
+#             Show.id == booking.show_id
+#         ).first()
+
+#         if not show:
+#             raise HTTPException(status_code=404, detail="Show not found")
+
+#         total_price = booking.seats_booked * show.price_per_seat
+
+#         new_booking = Booking(
+#             user_id=current_user.id,
+#             show_id=show.id,
+#             seats_booked=booking.seats_booked,
+#             seat_row=booking.seat_row,
+#             seat_number=booking.seat_number,
+#             total_price=total_price,
+#             paid=False,
+#             status="pending"
+#         )
+
+#         show.available_seats -= booking.seats_booked
+
+#         db.add(new_booking)
+#         db.commit()
+#         db.refresh(new_booking)
+
+#         redis_client.set(
+#             f"show:{show.id}:available_seats",
+#             show.available_seats
+#         )
+
+#         razorpay_order = create_order(
+#             amount=int(total_price * 100),
+#             receipt=f"booking_{new_booking.id}"
+#         )
+
+#         return {
+#             "booking_id": new_booking.id,
+#             "razorpay_order_id": razorpay_order["id"],
+#             "amount": razorpay_order["amount"],
+#             "currency": razorpay_order["currency"],
+#             "razorpay_key": "rzp_test_SHTEhFzarLWakV",
+#             "paid": new_booking.paid,
+#             "status": new_booking.status
+#         }
+
+#     finally:
+#         unlock_seats(lock_key)
 @router.post("/")
 def create_booking(
     booking: BookingCreate,
@@ -853,9 +926,24 @@ def create_booking(
     current_user: User = Depends(get_current_user)
 ):
 
-    # Trigger auto cancel first
+    # 1️⃣ Auto cancel expired bookings first
     auto_cancel_expired_bookings(db)
 
+    # 2️⃣ Check if seat already booked (IMPORTANT FIX)
+    existing_booking = db.query(Booking).filter(
+        Booking.show_id == booking.show_id,
+        Booking.seat_row == booking.seat_row,
+        Booking.seat_number == booking.seat_number,
+        Booking.status != "cancelled"
+    ).first()
+
+    if existing_booking:
+        raise HTTPException(
+            status_code=400,
+            detail="This seat is already booked"
+        )
+
+    # 3️⃣ Check available seats count
     available_seats = get_available_seats(
         booking.show_id,
         db
@@ -867,6 +955,7 @@ def create_booking(
             detail="Not enough seats available"
         )
 
+    # 4️⃣ Lock booking for this show (Redis lock)
     lock_key = lock_seats(booking.show_id)
 
     try:
@@ -876,10 +965,14 @@ def create_booking(
         ).first()
 
         if not show:
-            raise HTTPException(status_code=404, detail="Show not found")
+            raise HTTPException(
+                status_code=404,
+                detail="Show not found"
+            )
 
         total_price = booking.seats_booked * show.price_per_seat
 
+        # 5️⃣ Create booking
         new_booking = Booking(
             user_id=current_user.id,
             show_id=show.id,
@@ -891,17 +984,20 @@ def create_booking(
             status="pending"
         )
 
+        # 6️⃣ Reduce available seats
         show.available_seats -= booking.seats_booked
 
         db.add(new_booking)
         db.commit()
         db.refresh(new_booking)
 
+        # 7️⃣ Update Redis cache
         redis_client.set(
             f"show:{show.id}:available_seats",
             show.available_seats
         )
 
+        # 8️⃣ Create Razorpay order
         razorpay_order = create_order(
             amount=int(total_price * 100),
             receipt=f"booking_{new_booking.id}"
@@ -920,10 +1016,9 @@ def create_booking(
     finally:
         unlock_seats(lock_key)
 
-
-# ==========================
-# VERIFY PAYMENT
-# ==========================
+# # ==========================
+# # VERIFY PAYMENT
+# # ==========================
 
 @router.post("/verify-payment")
 def verify_booking_payment(
