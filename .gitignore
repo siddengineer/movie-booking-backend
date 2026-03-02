@@ -1,4 +1,18 @@
+# Virtual Environment
+m/
 venv/
-__pycache__/
-.env
+Lib/
+Scripts/
+pyvenv.cfg
+
+# Python
+_pycache_/
 *.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+
+# VS Code
+.vscode/
