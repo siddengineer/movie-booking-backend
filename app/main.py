@@ -259,9 +259,11 @@ from app.models.booking import Booking
 from app.core.database import SessionLocal
 from app.services.payment_service import create_order
 from app.api import webhooks
+from app.core.middleware import request_logging_middleware
+from fastapi.middleware import Middleware
 # FastAPI app
 app = FastAPI(title="Movie Booking Backend")
-
+app.middleware("http")(request_logging_middleware)
 # Templates folder
 templates = Jinja2Templates(directory="app/templates")
 
