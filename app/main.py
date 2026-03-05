@@ -261,8 +261,10 @@ from app.services.payment_service import create_order
 from app.api import webhooks
 from app.core.middleware import request_logging_middleware
 from fastapi.middleware import Middleware
+from app.core.rate_limiter import rate_limit
 # FastAPI app
 app = FastAPI(title="Movie Booking Backend")
+app.middleware("http")(rate_limit)
 app.middleware("http")(request_logging_middleware)
 # Templates folder
 templates = Jinja2Templates(directory="app/templates")
